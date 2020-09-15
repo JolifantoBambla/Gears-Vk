@@ -21,9 +21,9 @@ namespace gvk
 		virtual ~camera();
 
 		// Returns the type of projection matrix used
-		projection_type projection_type() const { return mProjectionType; }
+    gvk::projection_type projection_type() const { return mProjectionType; }
 
-		// returns the projection matrix
+    // returns the projection matrix
 		const glm::mat4& projection_matrix() const { return mProjectionMatrix; }
 		// returns the distance of the near plane (ortho and perspective)
 		float near_plane_distance() const { return mNear; }
