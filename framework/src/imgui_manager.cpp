@@ -2,8 +2,10 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_vulkan.h>
+#ifdef _WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>   // for glfwGetWin32Window
+#endif
+#include <GLFW/glfw3native.h>   // for glfwGetWin32Window  // TODO: do we need this on linux?
 #include <imgui_internal.h>
 
 namespace gvk
