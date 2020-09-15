@@ -589,15 +589,16 @@ namespace gvk
 
 		// Hook in
 		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)mInstance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
+		// TODO: clean this up
 		if (func != nullptr) {
-			auto result = func(
-				mInstance, 
-				&static_cast<VkDebugUtilsMessengerCreateInfoEXT>(msgCreateInfo), 
-				nullptr, 
-				&mDebugUtilsCallbackHandle);
-			if (VK_SUCCESS != result) {
-				throw gvk::runtime_error("Failed to set up debug utils callback via vkCreateDebugUtilsMessengerEXT");
-			}
+
+      mDebugUtilsCallbackHandle = mInstance.createDebugUtilsMessengerEXT(
+		    msgCreateInfo,
+        nullptr,
+        mDynamicDispatch);
+      //if (VK_SUCCESS != result) {
+			//	throw gvk::runtime_error("Failed to set up debug utils callback via vkCreateDebugUtilsMessengerEXT");
+			//}
 		}
 		else {
 			throw gvk::runtime_error("Failed to vkGetInstanceProcAddr for vkCreateDebugUtilsMessengerEXT.");
@@ -663,6 +664,8 @@ namespace gvk
 			.setPfnCallback(context_vulkan::vk_debug_report_callback);
 		
 		// Hook in
+    mDebugReportCallbackHandle = mInstance.createDebugReportCallbackEXT(createInfo, nullptr, mDynamicDispatch);
+		/* TODO: clean this up
 		auto func = (PFN_vkCreateDebugReportCallbackEXT)mInstance.getProcAddr("vkCreateDebugReportCallbackEXT");
 		if (func != nullptr) {
 			auto result = func(
@@ -677,6 +680,7 @@ namespace gvk
 		else {
 			throw gvk::runtime_error("Failed to vkGetInstanceProcAddr for vkCreateDebugReportCallbackEXT.");
 		}
+		 */
 
 #endif
 	}
