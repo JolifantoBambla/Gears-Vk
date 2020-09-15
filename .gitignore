@@ -1,2 +1,4 @@
 # Build results of the framework-library
 framework/lib/
+cmake-build-debug/
+.idea/
