@@ -2,67 +2,6 @@
 
 namespace gvk
 {
-	vk::Format default_rgb8_4comp_format() noexcept
-	{
-		return vk::Format::eR8G8B8A8Unorm;
-	}
-	
-	vk::Format default_rgb8_3comp_format() noexcept
-	{
-		return vk::Format::eR8G8B8Unorm;
-	}
-	
-	vk::Format default_rgb8_2comp_format() noexcept
-	{
-		return vk::Format::eR8G8Unorm;
-	}
-	
-	vk::Format default_rgb8_1comp_format() noexcept
-	{
-		return vk::Format::eR8Unorm;
-	}
-	
-	vk::Format default_srgb_4comp_format() noexcept
-	{
-		return vk::Format::eR8G8B8A8Srgb;
-	}
-	
-	vk::Format default_srgb_3comp_format() noexcept
-	{
-		return vk::Format::eR8G8B8Srgb;
-	}
-	
-	vk::Format default_srgb_2comp_format() noexcept
-	{
-		return vk::Format::eR8G8Srgb;
-	}
-	
-	vk::Format default_srgb_1comp_format() noexcept
-	{
-		return vk::Format::eR8Srgb;
-	}
-	
-	vk::Format default_rgb16f_4comp_format() noexcept
-	{
-		return vk::Format::eR16G16B16A16Sfloat;
-	}
-	
-	vk::Format default_rgb16f_3comp_format() noexcept
-	{
-		return vk::Format::eR16G16B16Sfloat;
-	}
-	
-	vk::Format default_rgb16f_2comp_format() noexcept
-	{
-		return vk::Format::eR16G16Sfloat;
-	}
-	
-	vk::Format default_rgb16f_1comp_format() noexcept
-	{
-		return vk::Format::eR16Sfloat;
-	}
-	
-
 	vk::Format default_depth_format() noexcept
 	{
 		const auto formatCandidates = avk::make_array<vk::Format>(
