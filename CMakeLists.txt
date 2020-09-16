@@ -5,10 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
 
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries")
+
 add_library(${PROJECT_NAME} STATIC)
 target_include_directories(${PROJECT_NAME} PUBLIC
         framework/include)
-target_sources(${PROJECT_NAME} PUBLIC
+target_sources(${PROJECT_NAME} PRIVATE
         framework/src/animation.cpp
         framework/src/camera.cpp
         framework/src/cgb_exceptions.cpp
@@ -46,6 +48,39 @@ target_link_libraries(${PROJECT_NAME} avk)
 include(cmake/stb.cmake)
 target_include_directories(${PROJECT_NAME} PUBLIC ${stb_SOURCE_DIR})
 
+# Assimp
+include(cmake/assimp.cmake)
+target_include_directories(${PROJECT_NAME} PRIVATE ${assimp_SOURCE_DIR}/include/assimp)
+target_link_libraries(${PROJECT_NAME} assimp::assimp)
+
+# GLFW
+include(cmake/glfw.cmake)
+target_include_directories(${PROJECT_NAME} PUBLIC ${glfw_SOURCE_DIR}/include/GLFW)
+target_link_libraries(${PROJECT_NAME} glfw)
+
+# IMGUI
+include(cmake/imgui.cmake)
+target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} imgui)
+
+# Vulkan
+find_package(Vulkan)
+
+# pthreads
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+
 # TODO: include & link other external libraries
 
 # TODO: build examples (if option is set)
+
+# TODO: clean this up
+
+add_executable(hello_world
+        examples/hello_world/source/hello_world.cpp)
+target_include_directories(hello_world PUBLIC ${PROJECT_NAME})
+target_link_libraries(hello_world PUBLIC ${PROJECT_NAME} Vulkan::Vulkan Threads::Threads glfw assimp::assimp imgui)
+
+# this is done by the post build helper on windows
+file(COPY examples/hello_world/shaders DESTINATION ${CMAKE_BINARY_DIR})

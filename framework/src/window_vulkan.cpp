@@ -86,7 +86,7 @@ namespace cgb
 			return *selPresModeItr;
 		};
 
-		// If the window has already been created, the new setting can't 
+		// If the window has already been created, the new setting can't
 		// be applied unless the window is being recreated.
 		if (is_alive()) {
 			mRecreationRequired = true;
@@ -108,7 +108,7 @@ namespace cgb
 				.setAlphaToOneEnable(VK_FALSE); // Optional
 		};
 
-		// If the window has already been created, the new setting can't 
+		// If the window has already been created, the new setting can't
 		// be applied unless the window is being recreated.
 		if (is_alive()) {
 			mRecreationRequired = true;
@@ -119,7 +119,7 @@ namespace cgb
 	{
 		mNumberOfPresentableImagesGetter = [lNumImages = aNumImages]() { return lNumImages; };
 
-		// If the window has already been created, the new setting can't 
+		// If the window has already been created, the new setting can't
 		// be applied unless the window is being recreated.
 		if (is_alive()) {
 			mRecreationRequired = true;
@@ -130,7 +130,7 @@ namespace cgb
 	{
 		mNumberOfConcurrentFramesGetter = [lNumConcurrent = aNumConcurrent]() { return lNumConcurrent; };
 
-		// If the window has already been created, the new setting can't 
+		// If the window has already been created, the new setting can't
 		// be applied unless the window is being recreated.
 		if (is_alive()) {
 			mRecreationRequired = true;
@@ -141,7 +141,7 @@ namespace cgb
 	{
 		mAdditionalBackBufferAttachmentsGetter = [lAdditionalAttachments = std::move(aAdditionalAttachments)]() { return lAdditionalAttachments; };
 
-		// If the window has already been created, the new setting can't 
+		// If the window has already been created, the new setting can't
 		// be applied unless the window is being recreated.
 		if (is_alive()) {
 			mRecreationRequired = true;
@@ -170,7 +170,7 @@ namespace cgb
 			initialize_after_open();
 
 			// There will be some pending work regarding this newly created window stored within the
-			// context's events, like creating a swap chain and so on. 
+			// context's events, like creating a swap chain and so on.
 			// Why wait? Invoke them now!
 			context().work_off_event_handlers();
 		});
@@ -277,7 +277,7 @@ namespace cgb
 		}
 
 		aCommandBuffer->invoke_post_execution_handler(); // Yes, do it now!
-		
+
 		const auto frameId = aFrameId.value();
 		auto& refTpl = mSingleUseCommandBuffers.emplace_back(frameId, std::move(aCommandBuffer));
 		mCommandBufferRefs.emplace_back(frameId, std::cref(*std::get<command_buffer>(refTpl)));
@@ -301,7 +301,7 @@ namespace cgb
 		}
 
 		aCommandBuffer.invoke_post_execution_handler(); // Yes, do it now!
-		
+
 		mCommandBufferRefs.emplace_back(aFrameId.value(), std::cref(aCommandBuffer));
 	}
 
@@ -309,7 +309,7 @@ namespace cgb
 	{
 		// No need to protect against concurrent access since that would be misuse of this function.
 		// This shall never be called from the cg_element callbacks as being invoked through a parallel executor.
-		
+
 		// Find all to remove
 		auto to_remove = std::remove_if(
 			std::begin(mExtraSemaphoreDependencies), std::end(mExtraSemaphoreDependencies),
@@ -333,7 +333,7 @@ namespace cgb
 
 		// Up to the frame with id 'maxTTL', all command buffers can be safely removed
 		auto maxTTL = std::min(aPresentFrameId - number_of_in_flight_frames(), aPresentFrameId - number_of_swapchain_images());
-		
+
 		// 1. COMMAND BUFFER REFERENCES
 		const auto refs_to_remove = std::remove_if(
 			std::begin(mCommandBufferRefs), std::end(mCommandBufferRefs),
@@ -341,7 +341,7 @@ namespace cgb
 				return std::get<int64_t>(tpl) <= maxTTL;
 			});
 		mCommandBufferRefs.erase(refs_to_remove, std::end(mCommandBufferRefs));
-		
+
 		// 2. SINGLE USE COMMAND BUFFERS
 		// Can not use the erase-remove idiom here because that would invalidate iterators and references
 		// HOWEVER: "[...]unless the erased elements are at the end or the beginning of the container,
@@ -400,7 +400,7 @@ namespace cgb
 	void window::sync_before_render()
 	{
 		vk::Result result;
-		
+
 		// Wait for the fence before proceeding, GPU -> CPU synchronization via fence
 		const auto& fence = fence_for_frame();
 		cgb::context().logical_device().waitForFences(1u, fence.handle_ptr(), VK_TRUE, std::numeric_limits<uint64_t>::max());
@@ -420,7 +420,7 @@ namespace cgb
 		//	 - How to handle the fences? Is waitIdle enough?
 		//	 - A problem might be the multithreaded access to this function... hmm... or is it??
 		//      => Now would be the perfect time to think about how to handle parallel executors
-		//		   Only Command Buffer generation should be parallelized anyways, submission should 
+		//		   Only Command Buffer generation should be parallelized anyways, submission should
 		//		   be done on ONE thread, hence access to this method would be syncronized inherently, right?!
 		//
 		//	What about the following: Tie an instance of cg_element to ONE AND EXACTLY ONE window*?!
@@ -430,7 +430,7 @@ namespace cgb
 		//
 
 	}
-	
+
 	void window::render_frame()
 	{
 		try
@@ -441,7 +441,7 @@ namespace cgb
 			uint32_t imageIndex;
 			const auto& imgAvailableSem = image_available_semaphore_for_frame();
 			cgb::context().logical_device().acquireNextImageKHR(
-				swap_chain(), // the swap chain from which we wish to acquire an image 
+				swap_chain(), // the swap chain from which we wish to acquire an image
 				// At this point, I have to rant about the `timeout` parameter:
 				// The spec says: "timeout specifies how long the function waits, in nanoseconds, if no image is available."
 				// HOWEVER, don't think that a numeric_limit<int64_t>::max() will wait for nine quintillion nanoseconds!
@@ -494,7 +494,7 @@ namespace cgb
 				.setPImageIndices(&imageIndex)
 				.setPResults(nullptr);
 			cgb::context().presentation_queue().handle().presentKHR(presentInfo);
-			
+
 			// increment frame counter
 			++mCurrentFrame;
 		}
@@ -502,13 +502,13 @@ namespace cgb
 			LOG_INFO(fmt::format("Swap chain out of date at presentKHR-call[{}]. Waiting for better times...", omg.what()));
 		}
 	}
-	
+
 	std::optional<command_buffer> window::copy_to_swapchain_image(cgb::image_t& aSourceImage, std::optional<int64_t> aDestinationFrameId, bool aShallBePresentedDirectlyAfterwards)
 	{
 		auto& destinationImage = image_for_frame(aDestinationFrameId);
 		return copy_image_to_another(aSourceImage, destinationImage, cgb::sync::with_barriers_by_return(
 				cgb::sync::presets::image_copy::wait_for_previous_operations(aSourceImage, destinationImage),
-				aShallBePresentedDirectlyAfterwards 
+				aShallBePresentedDirectlyAfterwards
 					? cgb::sync::presets::image_copy::directly_into_present(aSourceImage, destinationImage)
 					: cgb::sync::presets::image_copy::let_subsequent_operations_wait(aSourceImage, destinationImage)
 			),
@@ -516,13 +516,13 @@ namespace cgb
 			false // Don't restore layout of destination => this is handled by the after-handler in any case
 		);
 	}
-	
+
 	std::optional<command_buffer> window::blit_to_swapchain_image(cgb::image_t& aSourceImage, std::optional<int64_t> aDestinationFrameId, bool aShallBePresentedDirectlyAfterwards)
 	{
 		auto& destinationImage = image_for_frame(aDestinationFrameId);
 		return blit_image(aSourceImage, image_for_frame(aDestinationFrameId), cgb::sync::with_barriers_by_return(
 			cgb::sync::presets::image_copy::wait_for_previous_operations(aSourceImage, destinationImage),
-			aShallBePresentedDirectlyAfterwards 
+			aShallBePresentedDirectlyAfterwards
 				? cgb::sync::presets::image_copy::directly_into_present(aSourceImage, destinationImage)
 				: cgb::sync::presets::image_copy::let_subsequent_operations_wait(aSourceImage, destinationImage)
 			),	
