@@ -2,3 +2,4 @@
 framework/lib/
 cmake-build-debug/
 .idea/
+*.spv
