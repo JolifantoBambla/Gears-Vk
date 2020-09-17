@@ -5,7 +5,7 @@
 
 namespace gvk
 {
-static avk::image create_1px_texture(std::array<uint8_t, 4> aColor, vk::Format aFormat, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler)
+avk::image create_1px_texture(std::array<uint8_t, 4> aColor, vk::Format aFormat, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler)
 {
   auto& commandBuffer = aSyncHandler.get_or_create_command_buffer();
   aSyncHandler.establish_barrier_before_the_operation(avk::pipeline_stage::transfer, avk::read_memory_access{avk::memory_access::transfer_read_access});
@@ -54,7 +54,7 @@ static avk::image create_1px_texture(std::array<uint8_t, 4> aColor, vk::Format a
   return img;
 }
 
-static avk::image create_image_from_file(const std::string& aPath, vk::Format aFormat, bool aFlip, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler, std::optional<gli::texture> aAlreadyLoadedGliTexture)
+avk::image create_image_from_file(const std::string& aPath, vk::Format aFormat, bool aFlip, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler, std::optional<gli::texture> aAlreadyLoadedGliTexture)
 {
   std::vector<avk::buffer> stagingBuffers;
   int width = 0;
@@ -223,7 +223,7 @@ static avk::image create_image_from_file(const std::string& aPath, vk::Format aF
   return img;
 }
 
-static avk::image create_image_from_file(const std::string& aPath, bool aLoadHdrIfPossible, bool aLoadSrgbIfApplicable, bool aFlip, int aPreferredNumberOfTextureComponents, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler)
+avk::image create_image_from_file(const std::string& aPath, bool aLoadHdrIfPossible, bool aLoadSrgbIfApplicable, bool aFlip, int aPreferredNumberOfTextureComponents, avk::memory_usage aMemoryUsage, avk::image_usage aImageUsage, avk::sync aSyncHandler)
 {
   std::optional<vk::Format> imFmt = {};
 

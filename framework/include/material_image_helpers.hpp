@@ -1,18 +1,16 @@
 #pragma once
 #include <gvk.hpp>
 
-#include "vk_format_convenience_functions.hpp"
-
 namespace gvk
 {	
-	static avk::image create_1px_texture(
+	extern avk::image create_1px_texture(
 	  std::array<uint8_t, 4> aColor,
 	  vk::Format aFormat = vk::Format::eR8G8B8A8Unorm,
 	  avk::memory_usage aMemoryUsage = avk::memory_usage::device,
 	  avk::image_usage aImageUsage = avk::image_usage::general_texture,
 	  avk::sync aSyncHandler = avk::sync::wait_idle());
 
-	static avk::image create_image_from_file(
+	extern avk::image create_image_from_file(
 	  const std::string& aPath,
 	  vk::Format aFormat,
 	  bool aFlip = true,
@@ -21,7 +19,7 @@ namespace gvk
 	  avk::sync aSyncHandler = avk::sync::wait_idle(),
 	  std::optional<gli::texture> aAlreadyLoadedGliTexture = {});
 	
-	static avk::image create_image_from_file(
+	extern avk::image create_image_from_file(
 	  const std::string& aPath,
 	  bool aLoadHdrIfPossible = true,
 	  bool aLoadSrgbIfApplicable = true,

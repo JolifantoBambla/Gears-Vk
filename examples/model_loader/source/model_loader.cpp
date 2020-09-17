@@ -232,7 +232,8 @@ public: // v== avk::invokee overrides which will be invoked by the framework ==v
 			auto int_min = std::chrono::duration_cast<std::chrono::minutes>(time_span).count();
 			auto int_sec = std::chrono::duration_cast<std::chrono::seconds>(time_span).count();
 			auto fp_ms = std::chrono::duration<double, std::milli>(time_span).count();
-			printf("Time from init to fourth frame: %d min, %lld sec %lf ms\n", int_min, int_sec - static_cast<decltype(int_sec)>(int_min) * 60, fp_ms - 1000.0 * int_sec);
+			printf("Time from init to fourth frame: %ld min, %ld sec %lf ms\n",
+          int_min, int_sec - static_cast<decltype(int_sec)>(int_min) * 60, fp_ms - 1000.0 * int_sec);
 		}
 
 		if (gvk::input().key_pressed(gvk::key_code::h)) {

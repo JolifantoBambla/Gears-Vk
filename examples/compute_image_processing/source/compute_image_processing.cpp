@@ -101,8 +101,8 @@ public: // v== avk::invokee overrides which will be invoked by the framework ==v
 
 		// Create our rasterization graphics pipeline with the required configuration:
 		mGraphicsPipeline = gvk::context().create_graphics_pipeline_for(
-			avk::from_buffer_binding(0) -> stream_per_vertex(&Vertex::pos) -> to_location(0),
-			avk::from_buffer_binding(0) -> stream_per_vertex(&Vertex::uv)  -> to_location(1),
+			avk::from_buffer_binding(0) -> stream_per_vertex<decltype(Vertex::pos)>() -> to_location(0),
+			avk::from_buffer_binding(0) -> stream_per_vertex<decltype(Vertex::uv)>()  -> to_location(1),
 			"shaders/texture.vert",
 			"shaders/texture.frag",
 			avk::cfg::front_face::define_front_faces_to_be_clockwise(),
@@ -200,7 +200,8 @@ public: // v== avk::invokee overrides which will be invoked by the framework ==v
 				
 				ImGui::Separator();
 
-				static ImTextureID inputTexId = ImGui_ImplVulkan_AddTexture(mInputImageAndSampler->sampler_handle(), mInputImageAndSampler->view_handle(), VK_IMAGE_LAYOUT_GENERAL);
+				static ImTextureID inputTexId = ImGui_ImplVulkan_AddTexture(mInputImageAndSampler->sampler_handle(),
+                                                                 mInputImageAndSampler->view_handle(), VK_IMAGE_LAYOUT_GENERAL);
 				// This ImTextureID-stuff is tough stuff -> see https://github.com/ocornut/imgui/pull/914
 		        float inputTexWidth  = (float)mInputImageAndSampler->get_image_view()->get_image().config().extent.width;
 		        float inputTexHeight = (float)mInputImageAndSampler->get_image_view()->get_image().config().extent.height;

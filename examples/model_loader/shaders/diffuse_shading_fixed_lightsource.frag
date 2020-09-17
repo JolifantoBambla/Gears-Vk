@@ -1,7 +1,9 @@
 #version 460
-#extension GL_EXT_nonuniform_qualifier : require
+#extension GL_EXT_nonuniform_qualifier : enable
 
+#ifdef GL_EXT_nonuniform_qualifier
 layout(set = 0, binding = 0) uniform sampler2D textures[];
+#endif
 
 struct MaterialGpuData
 {
@@ -75,8 +77,12 @@ void main()
 	int matIndex = materialIndex;
 
 	int diffuseTexIndex = matSsbo.materials[matIndex].mDiffuseTexIndex;
-    vec3 color = texture(textures[diffuseTexIndex], texCoord).rgb;
-	
+#ifdef GL_EXT_nonuniform_qualifier
+	vec3 color = texture(textures[diffuseTexIndex], texCoord).rgb;
+#else
+	vec3 color = vec3(0.5, 0.5, 0.5);
+#endif
+
 	float ambient = 0.1;
 	vec3 diffuse = matSsbo.materials[matIndex].mDiffuseReflectivity.rgb;
 	vec3 toLight = normalize(vec3(1.0, 1.0, 0.5));

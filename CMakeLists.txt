@@ -40,7 +40,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Auto-Vk
 include(cmake/auto-vk.cmake)
 target_include_directories(${PROJECT_NAME} PUBLIC ${auto-vk_SOURCE_DIR}/include)
-target_link_libraries(${PROJECT_NAME} avk)
+target_link_libraries(${PROJECT_NAME} PUBLIC avk)
 
 # stb
 include(cmake/stb.cmake)
@@ -48,37 +48,79 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
 
 # Assimp
 include(cmake/assimp.cmake)
-target_include_directories(${PROJECT_NAME} PRIVATE ${assimp_SOURCE_DIR}/include/assimp)
-target_link_libraries(${PROJECT_NAME} assimp::assimp)
+target_include_directories(${PROJECT_NAME} PUBLIC ${assimp_SOURCE_DIR}/include/assimp)
+target_link_libraries(${PROJECT_NAME} PUBLIC assimp::assimp)
 
 # GLFW
 include(cmake/glfw.cmake)
 target_include_directories(${PROJECT_NAME} PUBLIC ${glfw_SOURCE_DIR}/include/GLFW)
-target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
 
 # IMGUI
 include(cmake/imgui.cmake)
 target_include_directories(${PROJECT_NAME} PUBLIC ${imgui_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} imgui)
+target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 # Vulkan
-find_package(Vulkan)
+find_package(Vulkan REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Vulkan::Vulkan)
 
-# pthreads
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+if (UNIX)
+    # pthreads
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+endif (UNIX)
 
 
-# TODO: include & link other external libraries
+
 
 # TODO: build examples (if option is set)
 
 # TODO: clean this up: https://stackoverflow.com/questions/26037954/cmake-target-link-libraries-interface-dependencies
 
+# hello_world
 add_executable(hello_world
         examples/hello_world/source/hello_world.cpp)
-target_include_directories(hello_world PUBLIC ${PROJECT_NAME})
-target_link_libraries(hello_world PUBLIC ${PROJECT_NAME} Vulkan::Vulkan Threads::Threads glfw assimp::assimp imgui)
+target_include_directories(hello_world PRIVATE ${PROJECT_NAME})
+target_link_libraries(hello_world PRIVATE ${PROJECT_NAME})
 
 # this is done by the post build helper on windows
 file(COPY examples/hello_world/shaders DESTINATION ${CMAKE_BINARY_DIR})
+
+
+# model_loader
+add_executable(model_loader
+        examples/model_loader/source/model_loader.cpp)
+target_include_directories(model_loader PRIVATE ${PROJECT_NAME})
+target_link_libraries(model_loader PRIVATE ${PROJECT_NAME})
+
+# this is done by the post build helper on windows
+file(COPY examples/model_loader/shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets/3rd_party/models/sponza/sponza_structure.obj DESTINATION ${CMAKE_BINARY_DIR}/assets)
+
+
+# compute_image_processing
+add_executable(compute_image_processing
+        examples/compute_image_processing/source/compute_image_processing.cpp)
+target_include_directories(compute_image_processing PRIVATE ${PROJECT_NAME})
+target_link_libraries(compute_image_processing PRIVATE ${PROJECT_NAME})
+
+# this is done by the post build helper on windows
+file(COPY examples/compute_image_processing/shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets/3rd_party/models/sponza/textures/lion.png DESTINATION ${CMAKE_BINARY_DIR}/assets)
+
+
+# orca_loader
+add_executable(orca_loader
+        examples/orca_loader/source/orca_loader.cpp)
+target_include_directories(orca_loader PRIVATE
+        examples/orca_loader/source)
+target_include_directories(orca_loader PRIVATE ${PROJECT_NAME})
+target_link_libraries(orca_loader PRIVATE ${PROJECT_NAME})
+
+
+## general assets stuff
+# this is done be the post build helper on windows
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+#file(COPY assets/3rd_party/models/sponza/textures DESTINATION ${CMAKE_BINARY_DIR}/assets)

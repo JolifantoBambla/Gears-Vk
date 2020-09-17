@@ -10,15 +10,21 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(imgui)
 
+FetchContent_Declare(
+        imgui-martty
+        GIT_REPOSITORY      https://github.com/martty/imgui.git
+        GIT_TAG             master
+)
+
+FetchContent_MakeAvailable(imgui-martty)
+
 add_library(imgui INTERFACE)
 target_include_directories(imgui INTERFACE
         ${imgui_SOURCE_DIR}
-        ${imgui_SOURCE_DIR}/examples)
+        ${imgui-martty_SOURCE_DIR}/examples)
 target_sources(imgui INTERFACE
         ${imgui_SOURCE_DIR}/imgui.cpp
-        #${imgui_SOURCE_DIR}/imgui_demo.cpp
         ${imgui_SOURCE_DIR}/imgui_draw.cpp
         ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-        ${imgui_SOURCE_DIR}/examples/imgui_impl_glfw.cpp
-        #${imgui_SOURCE_DIR}/examples/imgui_impl_opengl3.cpp
-        ${imgui_SOURCE_DIR}/examples/imgui_impl_vulkan.cpp)
+        ${imgui-martty_SOURCE_DIR}/examples/imgui_impl_glfw.cpp
+        ${imgui-martty_SOURCE_DIR}/examples/imgui_impl_vulkan.cpp)
