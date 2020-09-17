@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries")
-
 add_library(${PROJECT_NAME} STATIC)
 target_include_directories(${PROJECT_NAME} PUBLIC
         framework/include)
@@ -46,7 +44,7 @@ target_link_libraries(${PROJECT_NAME} avk)
 
 # stb
 include(cmake/stb.cmake)
-target_include_directories(${PROJECT_NAME} PUBLIC ${stb_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
 
 # Assimp
 include(cmake/assimp.cmake)
@@ -75,7 +73,7 @@ find_package(Threads REQUIRED)
 
 # TODO: build examples (if option is set)
 
-# TODO: clean this up
+# TODO: clean this up: https://stackoverflow.com/questions/26037954/cmake-target-link-libraries-interface-dependencies
 
 add_executable(hello_world
         examples/hello_world/source/hello_world.cpp)

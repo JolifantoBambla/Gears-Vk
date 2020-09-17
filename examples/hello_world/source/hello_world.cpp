@@ -1,4 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION // this should be in gvk
 #include <gvk.hpp>
 #include <imgui.h>
 
